@@ -1,0 +1,69 @@
+﻿@page "/"
+@namespace BlazorCrud5.Pages
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="es-mx">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BlazorCrud5</title>
+    <base href="~/" />
+    <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
+    <link href="css/site.css" rel="stylesheet" />
+    <link href="BlazorCrud5.styles.css" rel="stylesheet" />
+
+    <!-- Librerías de dataTables.net -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <link href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" rel="stylesheet" />
+    <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+
+</head>
+<body>
+    <component type="typeof(App)" render-mode="ServerPrerendered" />
+
+    <div id="blazor-error-ui">
+        <environment include="Staging,Production">
+            An error has occurred. This application may no longer respond until reloaded.
+        </environment>
+        <environment include="Development">
+            An unhandled exception has occurred. See browser dev tools for details.
+        </environment>
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
+
+    <script src="_framework/blazor.server.js"></script>
+
+    <!-- Script para el datatable.net -->
+    <script>
+        function DataTablesAdd(table) {
+            $(document).ready(function () {
+                //se asigna "mi_tabla" que será llamado en el id de la tabla
+                $('#mi_tabla').DataTable({
+                    //se puede visualizar u ocultar las opciones de la tabla
+                    "paging": true,
+                    "searching": true,
+                    "ordering": true,
+                    "info": false,
+                    //cambia todos los titulos a un idioma en especifico (español)
+                    "language": {
+                        "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+                    },
+                });
+            });
+        }
+        function DataTablesRemove(table) {
+            $(document).ready(function () {
+                $(table).DataTable().destroy();
+                var elem = document.querySelector(table + '_wrapper');
+                elem.parentNode.removeChild(elem);
+            });
+        }
+    </script>
+
+</body>
+</html>

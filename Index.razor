@@ -1,0 +1,97 @@
+﻿@page "/empleados"
+<!-- llamamos el model empleados -->
+@using BlazorCrud5.Models
+<!-- llamamos los servicios -->
+@using BlazorCrud5.Data.Services
+<!-- inyectamos los servicios -->
+@inject IEmpleadosService EmpleadosService
+
+<!-- llama funciones JS desde Blazor -->
+@inject IJSRuntime JSRuntime
+<!-- Proporciona la liberación de recursos-->
+@implements IDisposable
+
+<h3>Listado de empleados</h3>
+<div class="row">
+    @if (ListaEmpleados.Count > 0)
+    {
+        <table id="mi_tabla" class="table hover" style="width:100%">
+            <thead>
+                <tr>
+                    <!--Es el encabezado de ls lista-->
+                    <th>ID</th>
+                    <th>Folio</th>
+                    <th>Ingreso</th>
+                    <th>Status</th>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Email</th>
+                    <th>Departamento</th>
+                    <th>Función</th>
+                    <th>Baja</th>
+                    <th>Sueldo</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in ListaEmpleados)
+                {
+                    <tr>
+                        <td>@item.IntId</td>
+                        <td>@item.IntFolio</td>
+                        <td>@item.DatIngreso</td>
+                        <td>@item.StrStatus</td>
+                        <td>@item.StrNombre</td>
+                        <td>@item.StrApellido</td>
+                        <td>@item.StrEmail</td>
+                        <td>@item.StrDepartamento</td>
+                        <td>@item.StrFuncion</td>
+                        <td>@item.DatBaja</td>
+                        <td>@item.IntSueldo</td>
+                        <td>
+                            <a class="btn btn-primary mr-2" href="#">Editar</a>
+                            <a class="btn btn-danger mr-2" href="#">Borrar</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="text-center">
+            <h3 class="alert-danger">  No existen registro</h3>
+        </div>
+    }
+</div>
+
+@code {
+    //se recibe el listado de empleados y le podremos el nombre ListaEmpleados
+    private List<Empleado> ListaEmpleados = new List<Empleado>();
+
+    //para obtener los datos del repositorio services utilizamos el método
+    //OnInitializedAsync que se ejecuta en cuanto se entra al componente
+    //lo volvemos async
+    protected override async Task OnInitializedAsync()
+    {
+        //la ListaEmpleado obtiene los datos del método ObtnereTodos del
+        //repositorio EmpleadosService
+        ListaEmpleados = await EmpleadosService.ObtenerTodos();
+    }
+
+    //Métodos para el datatable.net
+    //Cuando los componenetes terminan de renderizar se ejecuta OnAfterRenderAsync
+    protected override async Task OnAfterRenderAsync(bool firstRender)    {
+
+        await JSRuntime.InvokeAsync<object>("DataTablesAdd", "#mi_tabla");
+    }
+    //Libera todos los recursos que ha adquirido pero que aún no libera del Document Object Model (DOM).
+    void IDisposable.Dispose()
+    {
+        JSRuntime.InvokeAsync<object>("DataTablesRemove", "#mi_tabla");
+    }
+
+}
+
+
+
